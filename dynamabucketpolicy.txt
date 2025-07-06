@@ -1,0 +1,48 @@
+{
+  "Version": "2008-10-17",
+  "Id": "__default_policy_ID",
+  "Statement": [
+    {
+      "Sid": "__default_statement_ID",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "SNS:Publish",
+        "SNS:RemovePermission",
+        "SNS:SetTopicAttributes",
+        "SNS:DeleteTopic",
+        "SNS:ListSubscriptionsByTopic",
+        "SNS:GetTopicAttributes",
+        "SNS:AddPermission",
+        "SNS:Subscribe"
+      ],
+      "Resource": "arn:aws:sns:YOUR_AWS_REGION:YOUR_ACCOUNT_ID:YOUR_SNS_TOPIC_NAME",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "YOUR_ACCOUNT_ID"
+        }
+      }
+    },
+    // --- START OF NEWLY ADDED STATEMENT FOR S3 PUBLISHING ---
+    {
+      "Sid": "AllowS3ToPublish", // Unique identifier for this policy statement
+      "Effect": "Allow",          // Grants permission
+      "Principal": {
+        "Service": "s3.amazonaws.com" // Allows the S3 service to be the principal
+      },
+      "Action": "SNS:Publish", // Grants S3 the permission to publish messages to this SNS topic
+      "Resource": "arn:aws:sns:YOUR_AWS_REGION:YOUR_ACCOUNT_ID:YOUR_SNS_TOPIC_NAME", // The ARN of your SNS Topic
+      "Condition": {
+        "ArnLike": {
+          "aws:SourceArn": "arn:aws:s3:::YOUR_S3_BUCKET_NAME" // Restricts publishing to only your specific S3 bucket
+        },
+        "StringEquals": {
+          "aws:SourceAccount": "YOUR_ACCOUNT_ID" // Ensures the S3 bucket is in your specific account
+        }
+      }
+    }
+    // --- END OF NEWLY ADDED STATEMENT FOR S3 PUBLISHING ---
+  ]
+}
