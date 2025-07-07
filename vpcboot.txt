@@ -1,0 +1,8 @@
+#l/bin/bash
+sudo su
+yum update -y
+yum install hƩpd -y
+cd /var/www/html
+echo "MyGoogle" > index.html
+service hƩpd start
+chkconfig hƩpd
